@@ -17,7 +17,7 @@ def consultar(sql, args=()):
         finally:
             con.close()
     except sqlite3.Error:
-        return []  # banco ainda não existe ou está ocupado
+        return [] 
 
 
 @app.route("/api/resumo")
