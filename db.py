@@ -5,7 +5,7 @@ import config
 
 def conectar():
     con = sqlite3.connect(config.DB_PATH, timeout=10)
-    con.execute("PRAGMA journal_mode=WAL")  # permite ler (dashboard) enquanto a esteira grava
+    con.execute("PRAGMA journal_mode=WAL")  
     return con
 
 
