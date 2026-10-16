@@ -9,7 +9,7 @@ import config
 import db
 from visao import Visao
 
-# Sequência de meio-passo do 28BYJ-48 (4096 passos por volta do eixo)
+# Sequência de meio-passo  (4096 passos por volta do eixo)
 SEQ = [(1, 0, 0, 0), (1, 1, 0, 0), (0, 1, 0, 0), (0, 1, 1, 0),
        (0, 0, 1, 0), (0, 0, 1, 1), (0, 0, 0, 1), (1, 0, 0, 1)]
 
@@ -25,7 +25,7 @@ class Motor:
         for p, v in zip(self.pinos, SEQ[self.idx]):
             GPIO.output(p, v)
 
-    def liberar(self):  # desenergiza as bobinas (evita aquecer o motor parado)
+    def liberar(self):  
         for p in self.pinos:
             GPIO.output(p, 0)
 
@@ -59,7 +59,7 @@ class Separador:
         self.motor, self.trava = motor, threading.Lock()
 
     def desviar_e_voltar(self):
-        with self.trava:  # impede dois acionamentos sobrepostos
+        with self.trava:  
             self.motor.mover(config.PASSOS_DESVIO, config.ATRASO_PASSO_SEPARADOR)
             time.sleep(config.TEMPO_DESVIADO)
             self.motor.mover(-config.PASSOS_DESVIO, config.ATRASO_PASSO_SEPARADOR)
@@ -70,7 +70,7 @@ def main():
     GPIO.setwarnings(False)
     db.iniciar()
 
-    # Lasers ligados (HIGH na base do 2N2222A liga o laser)
+    
     for pino in config.LASER.values():
         GPIO.setup(pino, GPIO.OUT, initial=GPIO.HIGH)
 
@@ -78,7 +78,7 @@ def main():
     separador = Separador(Motor(config.MOTOR_SEPARADOR))
     esteira.start()
 
-    # Barreiras ópticas: cada vez que o feixe é interrompido, conta 1 caixa na saída
+  
     borda = GPIO.RISING if config.LDR_NIVEL_INTERROMPIDO else GPIO.FALLING
     for saida, pino in config.LDR_DO.items():
         GPIO.setup(pino, GPIO.IN)
@@ -107,7 +107,7 @@ def main():
                 continue
             agora = time.time()
             if qr == ultimo_qr and agora - ultimo_t < config.COOLDOWN_LEITURA_S:
-                continue  # mesma caixa ainda na frente da câmera
+                continue  
             ultimo_qr, ultimo_t = qr, agora
 
             cor = visao.detectar_cor(frame)
